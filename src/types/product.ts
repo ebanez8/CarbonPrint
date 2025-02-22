@@ -3,12 +3,12 @@ export interface ProductSustainabilityData {
   name: string;
   carbonScore: {
     value: number;
-    rating: 'low' | 'medium' | 'high';
+    rating: "low" | "medium" | "high";
     details: {
       production: number;
       transportation: number;
       disposal: number;
-    }
+    };
   };
   certifications: string[];
   recyclable: boolean;
@@ -28,6 +28,7 @@ export interface ProductSustainabilityData {
     carbonScore: number;
     savings: number;
   }[];
+  quantity: string;
 }
 
 export interface OpenFoodFactsProduct {
@@ -42,5 +43,6 @@ export interface OpenFoodFactsProduct {
     ecoscore_grade?: string;
     labels_tags?: string[];
     image_url?: string;
+    quantity?: string;
   };
 }

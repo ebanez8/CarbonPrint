@@ -1,19 +1,21 @@
 import { motion } from "framer-motion";
-import { 
-  LeafIcon, 
-  PackageIcon, 
+import {
+  LeafIcon,
+  PackageIcon,
   AlertTriangleIcon,
   TagIcon,
   InfoIcon,
   DropletIcon,
   BoltIcon,
-  BoxIcon
+  BoxIcon,
 } from "lucide-react";
 import { ProductSustainabilityData } from "../types/product";
 import { calculateEcoPoints } from "./ScanHistory"; // Import the calculateEcoPoints function
 
 interface ProductCardProps {
   product: ProductSustainabilityData;
+  carbonFootprintPer100g?: number | null;
+  quantity?: string | null;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
@@ -32,21 +34,37 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   const renderSustainabilityBadge = (badge: string) => {
     const badges = {
-      'organic': { bg: 'bg-green-100', text: 'text-green-700', label: 'Organic' },
-      'fair-trade': { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Fair Trade' },
-      'recyclable': { bg: 'bg-teal-100', text: 'text-teal-700', label: 'Recyclable' },
-      'local-production': { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Local Production' },
-      'zero-waste': { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Zero Waste' }
+      organic: { bg: "bg-green-100", text: "text-green-700", label: "Organic" },
+      "fair-trade": {
+        bg: "bg-blue-100",
+        text: "text-blue-700",
+        label: "Fair Trade",
+      },
+      recyclable: {
+        bg: "bg-teal-100",
+        text: "text-teal-700",
+        label: "Recyclable",
+      },
+      "local-production": {
+        bg: "bg-purple-100",
+        text: "text-purple-700",
+        label: "Local Production",
+      },
+      "zero-waste": {
+        bg: "bg-amber-100",
+        text: "text-amber-700",
+        label: "Zero Waste",
+      },
     };
-    
-    const badgeConfig = badges[badge as keyof typeof badges] || { 
-      bg: 'bg-gray-100', 
-      text: 'text-gray-700', 
-      label: badge 
+
+    const badgeConfig = badges[badge as keyof typeof badges] || {
+      bg: "bg-gray-100",
+      text: "text-gray-700",
+      label: badge,
     };
 
     return (
-      <span 
+      <span
         key={badge}
         className={`px-2 py-1 rounded-full text-sm font-medium ${badgeConfig.bg} ${badgeConfig.text}`}
       >
@@ -66,8 +84,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       {/* Header Section */}
       <div className="flex items-start gap-4 mb-6">
         {product.imageUrl && (
-          <img 
-            src={product.imageUrl} 
+          <img
+            src={product.imageUrl}
             alt={product.name}
             className="w-24 h-24 object-cover rounded-lg"
           />
@@ -95,7 +113,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </div>
             <span>{product.carbonScore.value.toFixed(1)} kg CO₂</span>
           </div>
-          
+
           <div className="grid grid-cols-3 gap-3">
             {Object.entries(product.carbonScore.details).map(([key, value]) => (
               <div key={key} className="bg-gray-100 rounded-lg p-3">
@@ -112,7 +130,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <div className="mb-6">
           <h4 className="text-lg font-medium mb-3">Sustainability Badges</h4>
           <div className="flex flex-wrap gap-2">
-            {product.sustainabilityBadges.map(badge => renderSustainabilityBadge(badge))}
+            {product.sustainabilityBadges.map((badge) =>
+              renderSustainabilityBadge(badge)
+            )}
           </div>
         </div>
       )}
@@ -132,14 +152,18 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             <BoltIcon className="w-5 h-5 text-yellow-500" />
             <div>
               <p className="text-sm text-gray-600">Energy</p>
-              <p className="font-medium">{product.impactDetails.energyConsumption}</p>
+              <p className="font-medium">
+                {product.impactDetails.energyConsumption}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <BoxIcon className="w-5 h-5 text-purple-500" />
             <div>
               <p className="text-sm text-gray-600">Material</p>
-              <p className="font-medium">{product.impactDetails.materialType}</p>
+              <p className="font-medium">
+                {product.impactDetails.materialType}
+              </p>
             </div>
           </div>
         </div>
@@ -167,27 +191,27 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-{ecoPointsGained > 0 ? (
-            <div
-              className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-green-500`}
-            >
-              <div className="flex items-center gap-2">
-                <LeafIcon className="w-5 h-5" />
-                <span>Eco Points Gained</span>
-              </div>
-              <span>{ecoPointsGained}</span>
+        {ecoPointsGained > 0 ? (
+          <div
+            className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-green-500`}
+          >
+            <div className="flex items-center gap-2">
+              <LeafIcon className="w-5 h-5" />
+              <span>Eco Points Gained</span>
             </div>
-          ) : (
-            <div
-              className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-red-500`}
-            >
-              <div className="flex items-center gap-2">
-                <LeafIcon className="w-5 h-5" />
-                <span>Eco Points Lost</span>
-              </div>
-              <span>{-1 * ecoPointsGained}</span>
+            <span>{ecoPointsGained}</span>
+          </div>
+        ) : (
+          <div
+            className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-red-500`}
+          >
+            <div className="flex items-center gap-2">
+              <LeafIcon className="w-5 h-5" />
+              <span>Eco Points Lost</span>
             </div>
-          )}
+            <span>{-1 * ecoPointsGained}</span>
+          </div>
+        )}
 
         {product.ingredients && product.ingredients.length > 0 && (
           <div className="bg-gray-50 p-4 rounded-lg">
@@ -196,7 +220,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               <span className="font-medium">Ingredients:</span>
             </div>
             <p className="text-sm text-gray-600">
-              {product.ingredients.join(', ')}
+              {product.ingredients.join(", ")}
             </p>
           </div>
         )}

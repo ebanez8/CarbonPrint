@@ -12,3 +12,21 @@ export function debounce(func: (...args: any[]) => void, wait: number) {
     timeout = setTimeout(() => func(...args), wait);
   };
 }
+
+export function parseQuantity(quantity: string): number {
+  const match = quantity.match(/(\d+(\.\d+)?)\s*(g|kg|ml|l)/i);
+  if (!match) return 0;
+
+  const value = parseFloat(match[1]);
+  const unit = match[3].toLowerCase();
+
+  switch (unit) {
+    case "kg":
+    case "l":
+      return value * 1000;
+    case "g":
+    case "ml":
+    default:
+      return value;
+  }
+}
