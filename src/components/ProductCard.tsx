@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { 
   LeafIcon, 
@@ -11,6 +10,7 @@ import {
   BoxIcon
 } from "lucide-react";
 import { ProductSustainabilityData } from "../types/product";
+import { calculateEcoPoints } from "./ScanHistory"; // Import the calculateEcoPoints function
 
 interface ProductCardProps {
   product: ProductSustainabilityData;
@@ -54,6 +54,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </span>
     );
   };
+
+  const ecoPointsGained = calculateEcoPoints(product.carbonScore.value, 0); // Calculate eco points gained
 
   return (
     <motion.div
@@ -164,6 +166,28 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             <span>{product.packagingWarning}</span>
           </div>
         )}
+
+{ecoPointsGained > 0 ? (
+            <div
+              className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-green-500`}
+            >
+              <div className="flex items-center gap-2">
+                <LeafIcon className="w-5 h-5" />
+                <span>Eco Points Gained</span>
+              </div>
+              <span>{ecoPointsGained}</span>
+            </div>
+          ) : (
+            <div
+              className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-red-500`}
+            >
+              <div className="flex items-center gap-2">
+                <LeafIcon className="w-5 h-5" />
+                <span>Eco Points Lost</span>
+              </div>
+              <span>{-1 * ecoPointsGained}</span>
+            </div>
+          )}
 
         {product.ingredients && product.ingredients.length > 0 && (
           <div className="bg-gray-50 p-4 rounded-lg">
