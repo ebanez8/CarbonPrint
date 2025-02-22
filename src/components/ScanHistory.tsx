@@ -31,6 +31,7 @@ interface ScanHistoryProps {
     carbonSaved: number;
   };
 }
+
 export const calculateEcoPoints = (
   score: number,
   ecoPoints: number
@@ -44,6 +45,7 @@ export const calculateEcoPoints = (
 
   return ecoPoints - 3;
 };
+
 export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
   const getCarbonScoreStyle = (score: number) => {
     if (score <= 2) return "bg-green-100 text-green-700";
@@ -153,9 +155,15 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             </div>
             <div>
               <h3 className="font-medium text-gray-600">Eco Points</h3>
-              <p className="text-3xl font-bold text-green-600 mt-1">
-                {stats.ecoPoints}
-              </p>
+              {stats.ecoPoints < 0 ? (
+                <p className="text-3xl font-bold text-red-600 mt-1">
+                  {stats.ecoPoints}
+                </p>
+              ) : (
+                <p className="text-3xl font-bold text-green-600 mt-1">
+                  {stats.ecoPoints}
+                </p>
+              )}
             </div>
           </div>
         </motion.div>
