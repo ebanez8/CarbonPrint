@@ -52,11 +52,11 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
     }
 
     // Partition scans into impact levels
-    const highImpact = history.filter((scan) => scan.carbonScore >= 7);
+    const highImpact = history.filter((scan) => scan.carbonScore >= 5);
     const mediumImpact = history.filter(
-      (scan) => scan.carbonScore >= 4 && scan.carbonScore < 7
+      (scan) => scan.carbonScore >= 2.5 && scan.carbonScore < 5
     );
-    const lowImpact = history.filter((scan) => scan.carbonScore < 4);
+    const lowImpact = history.filter((scan) => scan.carbonScore < 2.5);
 
     // Calculate percentages for analysis
     const total = history.length;
@@ -79,7 +79,6 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
     }
     setRecommendation(message);
 
-    // Generate a personalized challenge
     generateChallenge(highImpact.length, mediumImpact.length);
 
     // Suggest an alternative based on the most frequently scanned high-impact product

@@ -14,6 +14,7 @@ import { ProductSustainabilityData } from "../types/product";
 import { ScanHistory as ScanHistoryType, UserStats } from "../types/user";
 import { useToast } from "../hooks/use-toast";
 import { SmartEcoAdvisor } from "@/components/SmartEcoAdviser";
+import { debounce } from "../lib/utils";
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -28,13 +29,16 @@ const Index = () => {
     carbonSaved: 0,
   });
   const { toast } = useToast();
+  const [isProcessingScan, setIsProcessingScan] = useState(false);
 
   const startScanning = () => {
     setIsScanning(true);
     setScannedProduct(null);
   };
 
-  const handleBarcodeScan = async (barcode: string) => {
+  const handleBarcodeScan = debounce(async (barcode: string) => {
+    if (isProcessingScan) return;
+    setIsProcessingScan(true);
     setIsLoading(true);
     try {
       const productData = await fetchProductSustainabilityData(barcode);
@@ -77,8 +81,9 @@ const Index = () => {
       });
     } finally {
       setIsLoading(false);
+      setIsProcessingScan(false);
     }
-  };
+  }, 1000); // Adjust the debounce delay as needed
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary-100 to-white">
