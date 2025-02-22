@@ -77,7 +77,10 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
         "You're making moderate choices; consider replacing some medium-impact items.";
     } else {
       message = "Excellent work! Most of your choices are eco-friendly.";
-    } 
+    } // else {
+    //   message =
+    //     "Your habits are varied. Try setting a goal to reduce high-impact scans.";
+    // }
     setRecommendation(message);
 
     generateChallenge(highImpact.length, mediumImpact.length);
