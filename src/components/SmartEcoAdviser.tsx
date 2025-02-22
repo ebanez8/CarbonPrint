@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Bot, Bell, Zap, TrendingUp, MessageSquare } from "lucide-react";
+import { Bot, Bell, Zap, TrendingUp, MessageSquare, ChartArea } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScanHistory as ScanHistoryType } from "../types/user";
 import { ProductSustainabilityData } from "../types/product";
+import Graph from "@/components/Graph"; // Match the filename
+
+
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface SmartEcoAdvisorProps {
   history: ScanHistoryType[];
@@ -45,7 +56,7 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
   // Analyze user scanning behavior with more granularity
   const analyzeUserBehavior = async () => {
     if (history.length === 0) {
-      setRecommendation("Scan some products to get personalized eco insights!");
+      setRecommendation("Scan products to get personalized eco-insights!");
       return;
     }
 
@@ -60,11 +71,6 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
     const totalCarbon = history.reduce((sum, scan) => sum + scan.carbonScore, 0);
     const total = history.length;
     const average = totalCarbon / total;
-  
-    // impact
-    // const highPct = (highImpact.length / total) * 100; 
-    // const medPct = (mediumImpact.length / total) * 100;
-    // const lowPct = (lowImpact.length / total) * 100;
 
     let message = "";
     if (average >= 4) {
@@ -75,10 +81,7 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
         "You're making moderately eco-friendly choices; consider replacing some medium-impact items with more eco-friendly ones.";
     } else {
       message = "Excellent work! Most of your choices are eco-friendly.";
-    } // else {
-    //   message =
-    //     "Your habits are varied. Try setting a goal to reduce high-impact scans.";
-    // }
+    } 
     setRecommendation(message);
 
     generateChallenge(highImpact.length, mediumImpact.length);
@@ -115,7 +118,7 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
   // Generate a trend report based on historical scanning data
   const generateTrendReport = () => {
     if (history.length < 5) {
-      setTrendReport("Not enough data to generate a trend report.");
+      setTrendReport("Keep on scanning to view a complete trend report!");
       return;
     }
     // A basic trend analysis: compare average scores in the first half vs. the second half of history.
@@ -195,12 +198,33 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
             </div>
           )}
 
-          {/* Trend Report and Reward Points */}
-          <div className="mt-4">
-            <p className="text-sm text-primary-800">
-              Trend Analysis: {trendReport}
-            </p>
-          </div>
+          { /* View Trend Analysis in Graph */ }
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                className="w-full gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
+                size="lg"
+              >
+                <ChartArea className="w-5 h-5" />
+                View Trend Analysis
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-center">
+                  Trend Analysis: Carbon Footprint Over Time
+                </DialogTitle>
+              </DialogHeader>
+              {/* Trend Report and Reward Points */}
+              <div className="mt-4">
+                <p className="text-sm text-primary-800">
+                  Trend Analysis: {trendReport}
+                </p>
+              </div>
+              
+              <Graph history={history} /> 
+            </DialogContent>
+          </Dialog>
 
           {/* Chat Query Section (if chat integration is provided) */}
           {onChatQuery && (
