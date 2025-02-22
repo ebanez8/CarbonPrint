@@ -59,24 +59,25 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
     const lowImpact = history.filter((scan) => scan.carbonScore < 2.5);
 
     // Calculate percentages for analysis
+    const totalCarbon = history.reduce((sum, scan) => sum + scan.carbonScore, 0);
     const total = history.length;
-    const highPct = (highImpact.length / total) * 100;
+    const average = totalCarbon / total;
+  
+    // impact
+    const highPct = (highImpact.length / total) * 100; 
     const medPct = (mediumImpact.length / total) * 100;
     const lowPct = (lowImpact.length / total) * 100;
 
     let message = "";
-    if (highPct >= 40) {
+    if (average >= 4) {
       message =
         "Your recent choices have a high carbon impact. Let's aim for greener alternatives!";
-    } else if (medPct >= 50) {
+    } else if (average >= 2.5) {
       message =
         "You're making moderate choices; consider replacing some medium-impact items.";
-    } else if (lowPct >= 60) {
-      message = "Excellent work! Most of your choices are eco-friendly.";
     } else {
-      message =
-        "Your habits are varied. Try setting a goal to reduce high-impact scans.";
-    }
+      message = "Excellent work! Most of your choices are eco-friendly.";
+    } 
     setRecommendation(message);
 
     generateChallenge(highImpact.length, mediumImpact.length);
