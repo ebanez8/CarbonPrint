@@ -72,7 +72,7 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
         "Your recent choices have a high carbon impact. Let's aim for greener alternatives!";
     } else if (average >= 2.5) {
       message =
-        "You're making moderate choices; consider replacing some medium-impact items.";
+        "You're making moderately eco-friendly choices; consider replacing some medium-impact items with more eco-friendly ones.";
     } else {
       message = "Excellent work! Most of your choices are eco-friendly.";
     } // else {
@@ -132,13 +132,13 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
 
     let trendMessage = "";
     if (secondHalfAvg < firstHalfAvg) {
-      trendMessage = "Good news! Your carbon footprint is improving over time.";
+      trendMessage = "Good news! Your carbon footprint is improving over time. Keep it up!";
     } else if (secondHalfAvg > firstHalfAvg) {
       trendMessage =
-        "Alert: Your average carbon score is rising. Time to rethink choices.";
+        "Alert: Your average carbon score is rising. Time to rethink your purchase choices!";
     } else {
       trendMessage =
-        "Your eco impact remains consistent. Small improvements can be made.";
+        "Your eco-impact remains consistent. Remember, small improvements are better than none!";
     }
     setTrendReport(trendMessage);
   };
@@ -220,16 +220,6 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
               )}
             </div>
           )}
-
-          {/* Refresh Insights Button */}
-          <Button
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2 mt-4"
-            onClick={analyzeUserBehavior}
-          >
-            <Bell className="w-4 h-4" />
-            Refresh Insights
-          </Button>
         </CardContent>
       </Card>
     </motion.div>
