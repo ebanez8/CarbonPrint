@@ -59,7 +59,10 @@ const Index = () => {
       // Update user stats
       setUserStats((prev) => {
         const ecoChoice = productData.carbonScore.rating === "low";
-        const points = calculateEcoPoints(productData.carbonScore.value, prev.ecoPoints);
+        const points = calculateEcoPoints(
+          productData.carbonScore.value,
+          prev.ecoPoints
+        );
         const carbonSaved = ecoChoice ? 5 : 0; // Assuming 5kg saved for eco-friendly choices
 
         return {
