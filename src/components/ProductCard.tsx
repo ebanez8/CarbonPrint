@@ -111,14 +111,14 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               <LeafIcon className="w-5 h-5" />
               <span>Total Impact</span>
             </div>
-            <span>{product.carbonScore.value.toFixed(1)} kg CO₂</span>
+            <span>{product.carbonScore.value.toFixed(2)} kg CO₂</span>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             {Object.entries(product.carbonScore.details).map(([key, value]) => (
               <div key={key} className="bg-gray-100 rounded-lg p-3">
                 <p className="text-sm text-gray-600 capitalize">{key}</p>
-                <p className="font-medium">{value.toFixed(1)} kg</p>
+                <p className="font-medium">{value.toFixed(2)} kg</p>
               </div>
             ))}
           </div>

@@ -70,7 +70,7 @@ function calculateCO2Per100g(
   quantityInGrams: number
 ): number {
   if (quantityInGrams <= 0) return 0;
-  return (totalEmission / quantityInGrams) * 100;
+  return Math.round((totalEmission / quantityInGrams) * 100*100)/100;
 }
 
 function calculateCarbonScore(
@@ -128,7 +128,7 @@ const fetchCO2Impact = async (productId: string): Promise<string> => {
     const ecoscore = product.ecoscore_grade;
     const carbonScore = calculateCarbonScore(ecoscore, quantityInGrams);
     const co2Per100g = calculateCO2Per100g(carbonScore.value, quantityInGrams);
-    return co2Per100g.toFixed(2); // Returns a string with 2 decimals (kg CO₂ per 100g)
+    return String(Math.round(co2Per100g * 100) / 100);
   } catch (error) {
     console.error("Error fetching CO₂ impact:", error);
     return "N/A";
@@ -561,7 +561,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                   )}`}
                 >
                   <LeafIcon className="w-4 h-4" />
-                  <span className="font-medium">{scan.carbonScore} kg CO₂</span>
+                  <span className="font-medium">{Math.round(scan.carbonScore*100)/100} kg CO₂</span>
                 </div>
               </div>
 
