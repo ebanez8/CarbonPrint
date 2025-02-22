@@ -89,6 +89,14 @@ function parseQuantity(quantityStr: string): number {
   return 100; // default to 100g if parsing fails
 }
 
+function calculateCO2Per100g(
+  totalEmission: number,
+  quantityInGrams: number
+): number {
+  if (quantityInGrams <= 0) return 0;
+  return (totalEmission / quantityInGrams) * 100;
+}
+
 function generateSustainabilityBadges(
   product: OpenFoodFactsProduct["product"]
 ): string[] {
@@ -148,7 +156,7 @@ const calculateCarbonScore = (
     disposal: number;
   };
 } => {
-  const baseEmissionRate = 0.0007; // Adjusted base emission rate (kg CO₂ per gram)
+  const baseEmissionRate = 0.0025; // Adjusted base emission rate (kg CO₂ per gram)
   const emissionMultiplier = ecoscore
     ? {
         a: 0.5,

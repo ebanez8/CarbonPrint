@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ClockIcon,
@@ -20,8 +21,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SmartEcoAdvisor } from "./SmartEcoAdviser";
-import { fetchProductSustainabilityData } from "@/services/sustainabilityApi";
 
 interface ScanHistoryProps {
   history: ScanHistoryType[];
@@ -32,21 +31,113 @@ interface ScanHistoryProps {
   };
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const calculateEcoPoints = (
   score: number,
   ecoPoints: number
 ): number => {
-  if (score <= 2.5) {
-    return ecoPoints + 5;
-  }
-  if (score <= 4) {
-    return ecoPoints + 1;
-  }
-
+  if (score <= 2.5) return ecoPoints + 5;
+  if (score <= 4) return ecoPoints + 1;
   return ecoPoints - 3;
 };
 
+// -------------------------
+// Helper functions for sustainability calculations
+// -------------------------
+function parseQuantity(quantityStr: string): number {
+  const match = quantityStr.match(/(\d+(\.\d+)?)\s*(g|kg|ml|l)/i);
+  if (match) {
+    const value = parseFloat(match[1]);
+    const unit = match[3].toLowerCase();
+    switch (unit) {
+      case "kg":
+      case "l":
+        return value * 1000;
+      case "g":
+      case "ml":
+        return value;
+      default:
+        return 100; // default to 100g if unit is not recognized
+    }
+  }
+  return 100; // default to 100g if parsing fails
+}
+
+function calculateCO2Per100g(
+  totalEmission: number,
+  quantityInGrams: number
+): number {
+  if (quantityInGrams <= 0) return 0;
+  return (totalEmission / quantityInGrams) * 100;
+}
+
+function calculateCarbonScore(
+  ecoscore: string | undefined,
+  quantityInGrams: number
+): {
+  value: number;
+  rating: "low" | "medium" | "high";
+  details: {
+    production: number;
+    transportation: number;
+    disposal: number;
+  };
+} {
+  const baseEmissionRate = 0.0025; // kg CO₂ per gram
+  const emissionMultiplier = ecoscore
+    ? {
+        a: 0.5,
+        b: 0.75,
+        c: 1,
+        d: 1.1,
+        e: 1.25,
+      }[ecoscore] || 1
+    : 1;
+
+  const totalEmission = baseEmissionRate * emissionMultiplier * quantityInGrams;
+  const rating =
+    totalEmission < 0.3 ? "low" : totalEmission < 1 ? "medium" : "high";
+
+  return {
+    value: totalEmission,
+    rating,
+    details: {
+      production: totalEmission * 0.6,
+      transportation: totalEmission * 0.25,
+      disposal: totalEmission * 0.15,
+    },
+  };
+}
+
+// -------------------------
+// Updated fetchCO2Impact using sustainability calculations
+// -------------------------
+const fetchCO2Impact = async (productId: string): Promise<string> => {
+  try {
+    await delay(1000);
+    const response = await fetch(
+      `https://world.openfoodfacts.org/api/v0/product/${productId}.json`
+    );
+    const data = await response.json();
+    if (data.status !== 1) return "N/A";
+    const product = data.product;
+    const quantityStr = product.quantity || "100 g";
+    const quantityInGrams = parseQuantity(quantityStr);
+    const ecoscore = product.ecoscore_grade;
+    const carbonScore = calculateCarbonScore(ecoscore, quantityInGrams);
+    const co2Per100g = calculateCO2Per100g(carbonScore.value, quantityInGrams);
+    return co2Per100g.toFixed(2); // Returns a string with 2 decimals (kg CO₂ per 100g)
+  } catch (error) {
+    console.error("Error fetching CO₂ impact:", error);
+    return "N/A";
+  }
+};
+
 export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
+  const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
+  const [selectedScanId, setSelectedScanId] = useState<number | null>(null);
+
   const getCarbonScoreStyle = (score: number) => {
     if (score <= 2) return "bg-green-100 text-green-700";
     if (score <= 4) return "bg-yellow-100 text-yellow-700";
@@ -110,6 +201,31 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
         "Properly recycle and dispose of products",
       ],
     };
+  };
+
+  const fetchRecommendedProducts = async (productName: string) => {
+    try {
+      const response = await fetch(
+        `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${productName}&sort_by=popularity&json=true`
+      );
+      const data = await response.json();
+      return data.products || [];
+    } catch (error) {
+      console.error("Error fetching recommended products:", error);
+      return [];
+    }
+  };
+
+  const handleProductClick = async (scan: ScanHistoryType) => {
+    const products = await fetchRecommendedProducts(scan.productName);
+    const productsWithCO2 = await Promise.all(
+      products.map(async (product) => ({
+        ...product,
+        co2Impact: await fetchCO2Impact(product.id),
+      }))
+    );
+    setRecommendedProducts(productsWithCO2);
+    setSelectedScanId(Number(scan.id));
   };
 
   const totalCarbon = getTotalCarbon();
@@ -221,7 +337,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             Analyze Environmental Impact
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-3xl overflow-y-auto max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center">
               Environmental Impact Analysis
@@ -299,7 +415,11 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                 Eco-Friendly Alternatives
               </h3>
               {history.map((scan) => (
-                <Card key={scan.id}>
+                <Card
+                  key={scan.id}
+                  onClick={() => handleProductClick(scan)}
+                  className="cursor-pointer"
+                >
                   <CardHeader>
                     <CardTitle className="text-base flex items-center gap-2">
                       <PackageIcon className="w-4 h-4" />
@@ -327,6 +447,32 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Recommended Products</h3>
+              {selectedScanId !== null && recommendedProducts.length > 0 ? (
+                recommendedProducts.slice(0, 5).map((product, index) => (
+                  <Card key={index}>
+                    <CardHeader>
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <PackageIcon className="w-4 h-4" />
+                        {product.product_name || "Unknown Product"}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-green-600">
+                        Total CO₂ Impact (per 100g): {product.co2Impact} kg
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">
+                  No recommended products found. Try clicking on a product above
+                  to see alternatives.
+                </p>
+              )}
             </div>
           </div>
         </DialogContent>
