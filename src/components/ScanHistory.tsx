@@ -9,6 +9,7 @@ import {
   CarIcon,
   SearchIcon,
   ArrowRightIcon,
+  Loader2Icon,
 } from "lucide-react";
 import { ScanHistory as ScanHistoryType } from "../types/user";
 import { Badge } from "@/components/ui/badge";
@@ -137,6 +138,8 @@ const fetchCO2Impact = async (productId: string): Promise<string> => {
 export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
   const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
   const [selectedScanId, setSelectedScanId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const getCarbonScoreStyle = (score: number) => {
     if (score <= 2) return "bg-green-100 text-green-700";
@@ -204,19 +207,33 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
   };
 
   const fetchRecommendedProducts = async (productName: string) => {
-    try {
-      const response = await fetch(
-        `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${productName}&sort_by=popularity&json=true`
-      );
-      const data = await response.json();
-      return data.products || [];
-    } catch (error) {
-      console.error("Error fetching recommended products:", error);
-      return [];
-    }
-  };
+  try {
+    setIsLoading(true);
+    const response = await fetch(
+      `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${productName}&sort_by=popularity&json=true`
+    );
+    const data = await response.json();
+    const products = data.products || [];
+    
+    // Filter out products with the same name
+    const uniqueProducts = products.filter(
+      (product: any) => 
+        product.product_name?.toLowerCase() !== productName.toLowerCase()
+    );
+    
+    return uniqueProducts.slice(0, 5); // Return only first 5 unique products
+  } catch (error) {
+    console.error("Error fetching recommended products:", error);
+    return [];
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleProductClick = async (scan: ScanHistoryType) => {
+  setIsLoading(true);
+  setDialogOpen(true);
+  try {
     const products = await fetchRecommendedProducts(scan.productName);
     const productsWithCO2 = await Promise.all(
       products.map(async (product) => ({
@@ -226,7 +243,12 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
     );
     setRecommendedProducts(productsWithCO2);
     setSelectedScanId(Number(scan.id));
-  };
+  } catch (error) {
+    console.error("Error processing products:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const totalCarbon = getTotalCarbon();
   const impact = getEnvironmentalImpact(totalCarbon);
@@ -327,14 +349,24 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
         </motion.div>
       </div>
 
-      <Dialog>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <Button
             className="w-full gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
             size="lg"
+            disabled={isLoading}
           >
-            <SearchIcon className="w-5 h-5" />
-            Analyze Environmental Impact
+            {isLoading ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Finding Alternatives...
+              </>
+            ) : (
+              <>
+                <SearchIcon className="w-5 h-5" />
+                Analyze Environmental Impact
+              </>
+            )}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-3xl overflow-y-auto max-h-[80vh]">
@@ -449,31 +481,38 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
               ))}
             </div>
 
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Recommended Products</h3>
-              {selectedScanId !== null && recommendedProducts.length > 0 ? (
-                recommendedProducts.slice(0, 5).map((product, index) => (
-                  <Card key={index}>
-                    <CardHeader>
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <PackageIcon className="w-4 h-4" />
-                        {product.product_name || "Unknown Product"}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-green-600">
-                        Total CO₂ Impact (per 100g): {product.co2Impact} kg
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center py-4">
-                  No recommended products found. Try clicking on a product above
-                  to see alternatives.
-                </p>
-              )}
-            </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2Icon className="w-8 h-8 animate-spin text-green-600" />
+                <span className="ml-3 text-gray-600">Finding eco-friendly alternatives...</span>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg">Recommended Products</h3>
+                {selectedScanId !== null && recommendedProducts.length > 0 ? (
+                  recommendedProducts.slice(0, 5).map((product, index) => (
+                    <Card key={index}>
+                      <CardHeader>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <PackageIcon className="w-4 h-4" />
+                          {product.product_name || "Unknown Product"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-green-600">
+                          Total CO₂ Impact (per 100g): {product.co2Impact} kg
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-center py-4">
+                    No recommended products found. Try clicking on a product above
+                    to see alternatives.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
