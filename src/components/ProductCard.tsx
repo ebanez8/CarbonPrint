@@ -191,25 +191,17 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {ecoPointsGained > 0 ? (
+        {ecoPointsGained !== 0 && (
           <div
-            className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-green-500`}
+            className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between ${getScoreColor(product.carbonScore.rating)}`}
           >
             <div className="flex items-center gap-2">
               <LeafIcon className="w-5 h-5" />
-              <span>Eco Points Gained</span>
+              <span>
+                {ecoPointsGained > 0 ? "Eco Points Gained" : "Eco Points Lost"}
+              </span>
             </div>
-            <span>{ecoPointsGained}</span>
-          </div>
-        ) : (
-          <div
-            className={`px-4 py-2 rounded-lg text-white font-medium flex items-center justify-between bg-red-500`}
-          >
-            <div className="flex items-center gap-2">
-              <LeafIcon className="w-5 h-5" />
-              <span>Eco Points Lost</span>
-            </div>
-            <span>{-1 * ecoPointsGained}</span>
+            <span>{Math.abs(ecoPointsGained)}</span>
           </div>
         )}
 

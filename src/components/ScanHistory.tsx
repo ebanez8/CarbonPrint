@@ -38,8 +38,8 @@ export const calculateEcoPoints = (
   score: number,
   ecoPoints: number
 ): number => {
-  if (score <= 2.5) return ecoPoints + 5;
-  if (score <= 4) return ecoPoints + 1;
+  if (score <= 0.20) return ecoPoints + 3;
+  if (score <= 0.35) return ecoPoints + 1;
   return ecoPoints - 3;
 };
 
@@ -305,27 +305,6 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             </div>
           </div>
         </motion.div>
-
-        {/* <motion.div
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2, delay: 0.3 }}
-          className="glass-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
-        >
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <LeafIcon className="w-6 h-6 text-green-500" />
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-600">CO₂ Saved</h3>
-              <p className="text-3xl font-bold text-green-600 mt-1">
-                {stats.carbonSaved.toFixed(1)}{" "}
-                <span className="text-lg font-medium">kg</span>
-              </p>
-            </div>
-          </div>
-        </motion.div> */}
 
         <motion.div
           initial={{ scale: 0.95 }}
