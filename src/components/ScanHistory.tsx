@@ -1,10 +1,27 @@
 import { motion } from "framer-motion";
-import { ClockIcon, LeafIcon, TreesIcon, PackageIcon, TagIcon, CarIcon, SearchIcon, ArrowRightIcon } from "lucide-react";
+import {
+  ClockIcon,
+  LeafIcon,
+  TreesIcon,
+  PackageIcon,
+  TagIcon,
+  CarIcon,
+  SearchIcon,
+  ArrowRightIcon,
+} from "lucide-react";
 import { ScanHistory as ScanHistoryType } from "../types/user";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SmartEcoAdvisor } from "./SmartEcoAdviser";
+import { fetchProductSustainabilityData } from "@/services/sustainabilityApi";
 
 interface ScanHistoryProps {
   history: ScanHistoryType[];
@@ -17,21 +34,24 @@ interface ScanHistoryProps {
 
 export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
   const getCarbonScoreStyle = (score: number) => {
-    if (score <= 2) return 'bg-green-100 text-green-700';
-    if (score <= 4) return 'bg-yellow-100 text-yellow-700';
-    return 'bg-red-100 text-red-700';
+    if (score <= 2) return "bg-green-100 text-green-700";
+    if (score <= 4) return "bg-yellow-100 text-yellow-700";
+    return "bg-red-100 text-red-700";
   };
 
   const renderBadge = (badge: string) => {
     const badges = {
-      'organic': { variant: 'success', label: 'Organic' },
-      'fair-trade': { variant: 'info', label: 'Fair Trade' },
-      'recyclable': { variant: 'secondary', label: 'Recyclable' },
-      'local-production': { variant: 'outline', label: 'Local' },
-      'zero-waste': { variant: 'warning', label: 'Zero Waste' }
+      organic: { variant: "success", label: "Organic" },
+      "fair-trade": { variant: "info", label: "Fair Trade" },
+      recyclable: { variant: "secondary", label: "Recyclable" },
+      "local-production": { variant: "outline", label: "Local" },
+      "zero-waste": { variant: "warning", label: "Zero Waste" },
     };
 
-    const config = badges[badge as keyof typeof badges] || { variant: 'default', label: badge };
+    const config = badges[badge as keyof typeof badges] || {
+      variant: "default",
+      label: badge,
+    };
     return (
       <Badge key={badge} variant={config.variant as any}>
         {config.label}
@@ -50,31 +70,31 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
           icon: CarIcon,
           title: "Car Travel",
           value: `${(totalCarbon * 4).toFixed(1)} km`,
-          description: "Distance a car could travel with the same emissions"
+          description: "Distance a car could travel with the same emissions",
         },
         {
           icon: TreesIcon,
           title: "Tree Absorption",
           value: `${Math.ceil(totalCarbon / 21.7)} trees`,
-          description: "Number of trees needed for a year to absorb this CO₂"
+          description: "Number of trees needed for a year to absorb this CO₂",
         },
         {
           icon: LeafIcon,
           title: "Environmental Impact",
           value: `${(totalCarbon * 0.3).toFixed(1)} m²`,
-          description: "Arctic ice at risk of melting from these emissions"
-        }
+          description: "Arctic ice at risk of melting from these emissions",
+        },
       ],
       effects: [
         "Contributes to global warming through greenhouse gas emissions",
         "Affects local air quality and public health",
-        "Impacts wildlife habitats and biodiversity"
+        "Impacts wildlife habitats and biodiversity",
       ],
       solutions: [
         "Choose reusable and sustainable alternatives",
         "Support local and eco-friendly products",
-        "Properly recycle and dispose of products"
-      ]
+        "Properly recycle and dispose of products",
+      ],
     };
   };
 
@@ -88,7 +108,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
       className="space-y-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           whileHover={{ scale: 1.02 }}
@@ -101,12 +121,14 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             </div>
             <div>
               <h3 className="font-medium text-gray-600">Total Scans</h3>
-              <p className="text-3xl font-bold text-primary-900 mt-1">{stats.totalScans}</p>
+              <p className="text-3xl font-bold text-primary-900 mt-1">
+                {stats.totalScans}
+              </p>
             </div>
           </div>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           whileHover={{ scale: 1.02 }}
@@ -119,12 +141,14 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             </div>
             <div>
               <h3 className="font-medium text-gray-600">Eco Points</h3>
-              <p className="text-3xl font-bold text-green-600 mt-1">{stats.ecoPoints}</p>
+              <p className="text-3xl font-bold text-green-600 mt-1">
+                {stats.ecoPoints}
+              </p>
             </div>
           </div>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           whileHover={{ scale: 1.02 }}
@@ -138,13 +162,14 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             <div>
               <h3 className="font-medium text-gray-600">CO₂ Saved</h3>
               <p className="text-3xl font-bold text-green-600 mt-1">
-                {stats.carbonSaved.toFixed(1)} <span className="text-lg font-medium">kg</span>
+                {stats.carbonSaved.toFixed(1)}{" "}
+                <span className="text-lg font-medium">kg</span>
               </p>
             </div>
           </div>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           whileHover={{ scale: 1.02 }}
@@ -158,7 +183,8 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             <div>
               <h3 className="font-medium text-gray-600">Total CO₂</h3>
               <p className="text-3xl font-bold text-red-600 mt-1">
-                {totalCarbon.toFixed(1)} <span className="text-lg font-medium">kg</span>
+                {totalCarbon.toFixed(1)}{" "}
+                <span className="text-lg font-medium">kg</span>
               </p>
             </div>
           </div>
@@ -167,7 +193,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button 
+          <Button
             className="w-full gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
             size="lg"
           >
@@ -177,7 +203,9 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
         </DialogTrigger>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-center">Environmental Impact Analysis</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-center">
+              Environmental Impact Analysis
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -187,12 +215,18 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                   <CardHeader>
                     <div className="flex items-center gap-2">
                       <comparison.icon className="w-5 h-5 text-green-600" />
-                      <CardTitle className="text-base">{comparison.title}</CardTitle>
+                      <CardTitle className="text-base">
+                        {comparison.title}
+                      </CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-2xl font-bold text-green-700">{comparison.value}</p>
-                    <p className="text-sm text-gray-600 mt-1">{comparison.description}</p>
+                    <p className="text-2xl font-bold text-green-700">
+                      {comparison.value}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {comparison.description}
+                    </p>
                   </CardContent>
                 </Card>
               ))}
@@ -201,12 +235,17 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Environmental Effects</CardTitle>
+                  <CardTitle className="text-lg">
+                    Environmental Effects
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
                     {impact.effects.map((effect, index) => (
-                      <li key={index} className="flex items-center gap-2 text-gray-700">
+                      <li
+                        key={index}
+                        className="flex items-center gap-2 text-gray-700"
+                      >
                         <div className="w-2 h-2 rounded-full bg-red-500" />
                         {effect}
                       </li>
@@ -222,7 +261,10 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                 <CardContent>
                   <ul className="space-y-2">
                     {impact.solutions.map((solution, index) => (
-                      <li key={index} className="flex items-center gap-2 text-gray-700">
+                      <li
+                        key={index}
+                        className="flex items-center gap-2 text-gray-700"
+                      >
                         <div className="w-2 h-2 rounded-full bg-green-500" />
                         {solution}
                       </li>
@@ -233,7 +275,9 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             </div>
 
             <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Eco-Friendly Alternatives</h3>
+              <h3 className="font-semibold text-lg">
+                Eco-Friendly Alternatives
+              </h3>
               {history.map((scan) => (
                 <Card key={scan.id}>
                   <CardHeader>
@@ -245,7 +289,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                   <CardContent>
                     <div className="space-y-3">
                       {scan.alternatives?.map((alt, index) => (
-                        <div 
+                        <div
                           key={index}
                           className="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                         >
@@ -268,7 +312,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
         </DialogContent>
       </Dialog>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -289,27 +333,33 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <p className="font-medium text-gray-900">{scan.productName}</p>
+                  <p className="font-medium text-gray-900">
+                    {scan.productName}
+                  </p>
                   {scan.brand && (
                     <p className="text-sm text-gray-500">{scan.brand}</p>
                   )}
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <ClockIcon className="w-4 h-4" />
                     {new Date(scan.timestamp).toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </div>
                 </div>
-                <div className={`px-3 py-1.5 rounded-full flex items-center gap-2 ${getCarbonScoreStyle(scan.carbonScore)}`}>
+                <div
+                  className={`px-3 py-1.5 rounded-full flex items-center gap-2 ${getCarbonScoreStyle(
+                    scan.carbonScore
+                  )}`}
+                >
                   <LeafIcon className="w-4 h-4" />
                   <span className="font-medium">{scan.carbonScore} kg CO₂</span>
                 </div>
               </div>
-              
+
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 {scan.category && (
                   <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -320,23 +370,32 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                 {scan.recyclable !== undefined && (
                   <div className="flex items-center gap-1 text-sm">
                     <PackageIcon className="w-4 h-4" />
-                    <span className={scan.recyclable ? "text-green-600" : "text-red-600"}>
+                    <span
+                      className={
+                        scan.recyclable ? "text-green-600" : "text-red-600"
+                      }
+                    >
                       {scan.recyclable ? "Recyclable" : "Not Recyclable"}
                     </span>
                   </div>
                 )}
               </div>
 
-              {scan.sustainabilityBadges && scan.sustainabilityBadges.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {scan.sustainabilityBadges.map(badge => renderBadge(badge))}
-                </div>
-              )}
+              {scan.sustainabilityBadges &&
+                scan.sustainabilityBadges.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {scan.sustainabilityBadges.map((badge) =>
+                      renderBadge(badge)
+                    )}
+                  </div>
+                )}
             </motion.div>
           ))}
           {history.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              <p>No scans yet. Start scanning products to build your history!</p>
+              <p>
+                No scans yet. Start scanning products to build your history!
+              </p>
             </div>
           )}
         </div>

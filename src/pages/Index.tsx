@@ -1,6 +1,10 @@
-
 import { useState } from "react";
-import { CameraIcon, LeafIcon, BarChartIcon, RefreshCcwIcon } from "lucide-react";
+import {
+  CameraIcon,
+  LeafIcon,
+  BarChartIcon,
+  RefreshCcwIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { BarcodeScanner } from "../components/BarcodeScanner";
 import { ProductCard } from "../components/ProductCard";
@@ -9,11 +13,13 @@ import { fetchProductSustainabilityData } from "../services/sustainabilityApi";
 import { ProductSustainabilityData } from "../types/product";
 import { ScanHistory as ScanHistoryType, UserStats } from "../types/user";
 import { useToast } from "../hooks/use-toast";
+import { SmartEcoAdvisor } from "@/components/SmartEcoAdviser";
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [scannedProduct, setScannedProduct] = useState<ProductSustainabilityData | null>(null);
+  const [scannedProduct, setScannedProduct] =
+    useState<ProductSustainabilityData | null>(null);
   const [scanHistory, setScanHistory] = useState<ScanHistoryType[]>([]);
   const [userStats, setUserStats] = useState<UserStats>({
     totalScans: 0,
@@ -22,7 +28,7 @@ const Index = () => {
     carbonSaved: 0,
   });
   const { toast } = useToast();
-  
+
   const startScanning = () => {
     setIsScanning(true);
     setScannedProduct(null);
@@ -43,11 +49,11 @@ const Index = () => {
         timestamp: new Date(),
         carbonScore: productData.carbonScore.value,
       };
-      setScanHistory(prev => [newScan, ...prev].slice(0, 10)); // Keep last 10 scans
+      setScanHistory((prev) => [newScan, ...prev].slice(0, 10)); // Keep last 10 scans
 
       // Update user stats
-      setUserStats(prev => {
-        const ecoChoice = productData.carbonScore.rating === 'low';
+      setUserStats((prev) => {
+        const ecoChoice = productData.carbonScore.rating === "low";
         const points = ecoChoice ? 10 : 0;
         const carbonSaved = ecoChoice ? 5 : 0; // Assuming 5kg saved for eco-friendly choices
 
@@ -105,8 +111,8 @@ const Index = () => {
             Scan & Learn
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover the environmental impact of products instantly with our AR-powered
-            scanner. Make informed choices for a sustainable future.
+            Discover the environmental impact of products instantly with our
+            AR-powered scanner. Make informed choices for a sustainable future.
           </p>
         </motion.div>
 
@@ -152,7 +158,8 @@ const Index = () => {
                     console.error("Scanning error:", error);
                     toast({
                       title: "Scanner Error",
-                      description: "There was an error with the barcode scanner. Please try again.",
+                      description:
+                        "There was an error with the barcode scanner. Please try again.",
                       variant: "destructive",
                     });
                   }}
@@ -166,7 +173,22 @@ const Index = () => {
               </div>
             )}
           </motion.div>
-
+          <SmartEcoAdvisor
+            history={scanHistory}
+            stats={{
+              totalScans: userStats.totalScans,
+              ecoPoints: userStats.ecoPoints,
+              carbonSaved: userStats.carbonSaved,
+            }}
+            onSuggestAlternative={async (barcode) => {
+              try {
+                return await fetchProductSustainabilityData(barcode);
+              } catch (error) {
+                console.error("Error fetching alternative product:", error);
+                return null;
+              }
+            }}
+          />
           {scanHistory.length > 0 && (
             <ScanHistory
               history={scanHistory}
@@ -190,7 +212,8 @@ const Index = () => {
                 <h3 className="text-lg font-semibold">Impact Score</h3>
               </div>
               <p className="text-gray-600">
-                Get instant carbon footprint ratings and environmental impact data
+                Get instant carbon footprint ratings and environmental impact
+                data
               </p>
             </motion.div>
 
@@ -220,7 +243,8 @@ const Index = () => {
                 <h3 className="text-lg font-semibold">Track Progress</h3>
               </div>
               <p className="text-gray-600">
-                Monitor your environmental impact and sustainable choices over time
+                Monitor your environmental impact and sustainable choices over
+                time
               </p>
             </motion.div>
           </div>
