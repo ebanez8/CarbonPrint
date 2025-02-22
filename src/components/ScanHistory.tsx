@@ -259,7 +259,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8"
     >
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
@@ -306,7 +306,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
           </div>
         </motion.div>
 
-        <motion.div
+        {/* <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           whileHover={{ scale: 1.02 }}
@@ -325,7 +325,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
               </p>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         <motion.div
           initial={{ scale: 0.95 }}
