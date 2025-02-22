@@ -34,13 +34,11 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
 
   // Additional states for trend analysis and gamification.
   const [trendReport, setTrendReport] = useState<string>("");
-  const [rewardPoints, setRewardPoints] = useState<number>(stats.ecoPoints);
   const [chatResponse, setChatResponse] = useState<string>("");
 
   useEffect(() => {
     analyzeUserBehavior();
     // Update reward points based on ecoPoints and historical improvements.
-    updateRewardPoints();
     generateTrendReport();
   }, [history, stats]);
 
@@ -64,9 +62,9 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
     const average = totalCarbon / total;
   
     // impact
-    const highPct = (highImpact.length / total) * 100; 
-    const medPct = (mediumImpact.length / total) * 100;
-    const lowPct = (lowImpact.length / total) * 100;
+    // const highPct = (highImpact.length / total) * 100; 
+    // const medPct = (mediumImpact.length / total) * 100;
+    // const lowPct = (lowImpact.length / total) * 100;
 
     let message = "";
     if (average >= 4) {
@@ -113,12 +111,6 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
     }
   };
 
-  // Update reward points based on ecoPoints and improvement trends
-  const updateRewardPoints = () => {
-    // Here we simulate a dynamic reward calculation based on ecoPoints and scan frequency.
-    const bonus = history.length > 10 ? 10 : history.length;
-    setRewardPoints(stats.ecoPoints + bonus);
-  };
 
   // Generate a trend report based on historical scanning data
   const generateTrendReport = () => {
@@ -207,9 +199,6 @@ export const SmartEcoAdvisor: React.FC<SmartEcoAdvisorProps> = ({
           <div className="mt-4">
             <p className="text-sm text-primary-800">
               Trend Analysis: {trendReport}
-            </p>
-            <p className="text-sm text-primary-800">
-              Reward Points: {rewardPoints} (based on your eco actions)
             </p>
           </div>
 
