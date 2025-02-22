@@ -15,6 +15,7 @@ import { ScanHistory as ScanHistoryType, UserStats } from "../types/user";
 import { useToast } from "../hooks/use-toast";
 import { SmartEcoAdvisor } from "@/components/SmartEcoAdviser";
 import { debounce } from "../lib/utils";
+import { calculateEcoPoints } from "../components/ScanHistory"; // Import the calculateEcoPoints function
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -58,13 +59,13 @@ const Index = () => {
       // Update user stats
       setUserStats((prev) => {
         const ecoChoice = productData.carbonScore.rating === "low";
-        const points = ecoChoice ? 10 : 0;
+        const points = calculateEcoPoints(productData.carbonScore.value, prev.ecoPoints);
         const carbonSaved = ecoChoice ? 5 : 0; // Assuming 5kg saved for eco-friendly choices
 
         return {
           totalScans: prev.totalScans + 1,
           totalEcoChoices: prev.totalEcoChoices + (ecoChoice ? 1 : 0),
-          ecoPoints: prev.ecoPoints + points,
+          ecoPoints: points,
           carbonSaved: prev.carbonSaved + carbonSaved,
         };
       });
