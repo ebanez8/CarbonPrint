@@ -53,7 +53,6 @@ export const fetchProductSustainabilityData = async (
       treeAbsorption: carbonScore.value / 6, // Example calculation
       arcticIceImpact: carbonScore.value * 0.15, // Example calculation
     };
-    const predictiveAnalysis = await predictEnvironmentalImpact(historicalData);
 
     const productData: ProductSustainabilityData = {
       id: barcode,
@@ -76,7 +75,6 @@ export const fetchProductSustainabilityData = async (
       alternatives,
       quantity: quantityStr,
       nlpAnalysis, // Add NLP analysis results here
-      predictiveAnalysis, // Add predictive analysis results here
     };
 
     return productData;

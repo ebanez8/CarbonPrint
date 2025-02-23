@@ -15,18 +15,12 @@ const generationConfig = {
   responseMimeType: "text/plain",
 };
 
-export const predictEnvironmentalImpact = async (historicalData: any) => {
+export const predictEnvironmentalImpact = async (carbonScore: number) => {
   const parts = [
     {
-      text: "input: ScenarioID,CarTravel (km),TreeAbsorption (trees/year), ArcticIceImpact (m²),EnvironmentalEffects,RecommendedActions\n1,1.4,1,0.1",
+      text: `input: CarbonScore (kg CO₂),EnvironmentalEffects,RecommendedActions\n${carbonScore}`,
     },
-    {
-      text: "output: Contributes to global warming; affects local air quality and public health; impacts wildlife habitats and biodiversity, Choose reusable and sustainable alternatives; support local and eco-friendly products; properly recycle and dispose of products",
-    },
-    { text: "input: 4,3.0,2,0.2," },
-    {
-      text: "output: High emissions contributing significantly to global warming; deteriorates air quality; major impact on vulnerable Arctic ice , Switch to eco-friendly alternatives; reduce car usage; support policies for sustainable practices",
-    },
+    { text: "output: " },
   ];
 
   try {
@@ -35,7 +29,14 @@ export const predictEnvironmentalImpact = async (historicalData: any) => {
       generationConfig,
     });
 
-    return result.response.text();
+    const responseText = result.response.text();
+    console.log("Response from model:", responseText); // Log the response for debugging
+
+    const outputText = responseText.includes("output: ")
+      ? responseText.split("output: ")[1].trim()
+      : responseText.trim(); // Handle cases where "output: " is not present
+
+    return outputText;
   } catch (error) {
     console.error("Error predicting environmental impact:", error);
     return null;
