@@ -16,6 +16,8 @@ import { useToast } from "../hooks/use-toast";
 import { SmartEcoAdvisor } from "@/components/SmartEcoAdviser";
 import { debounce } from "../lib/utils";
 import { calculateEcoPoints } from "../components/ScanHistory"; // Import the calculateEcoPoints function
+import { Link } from "react-router-dom";
+import About from "../pages/About"
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -99,9 +101,12 @@ const Index = () => {
               CarbonPrint
             </h1>
             <nav className="space-x-4">
-              <button className="text-primary-700 hover:text-primary-900 transition-colors">
+              <Link
+                to="./about"
+                className="text-primary-700 hover:text-primary-900 transition-colors"
+              >
                 About
-              </button>
+              </Link>
             </nav>
           </div>
         </div>
