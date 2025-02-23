@@ -1,5 +1,5 @@
 # CarbonPrint
-CarbonPrint solves the problem of uninformed shopping by using AR barcode scanning to instantly show a product’s environmental impact, empowering users to make eco-friendly choices and track their sustainability efforts.
+CarbonPrint allows consumers to make informed and sustainable shopping decisions using an AR barcode to scan and instantly display a product’s environmental impact, empowering users to make eco-friendly choices and track their sustainability efforts.
 
 <img width="1920" alt="Screenshot 2025-02-23 at 7 21 49 AM" src="https://github.com/user-attachments/assets/226233cb-cbe7-4490-9880-3ee44786ec3b" />
 
@@ -13,14 +13,14 @@ CarbonPrint solves the problem of uninformed shopping by using AR barcode scanni
 
 
 ## General Information
-CarbonPrint is an AR-powered sustainability application that helps users make environmentally conscious purchasing decisions. By scanning product barcodes, users can instantly discover the environmental impact of products and track their sustainable choices over time.
+CarbonPrint is an AR-powered sustainability application that helps users make environmentally-conscious purchasing decisions. By scanning product barcodes, users can instantly discover the environmental impact of products and track their sustainable choices over time.
 
 
 ## Features
 * AR-Powered Scanning: Instantly discover the environmental impact of products by scanning barcodes.
-* User Statistics: Track total scans, eco-friendly choices, eco points, and carbon saved.
-* Scan History: View the history of scanned products and their environmental impact.
-* Smart Eco Advisor: Get suggestions for sustainable alternatives.
+* User Statistics: Track total scans, eco-friendly choices, 'eco-points', and amount of carbon saved.
+* Scan History: View scanned products' history and their environmental impact.
+* Smart Eco Advisor: Receive suggestions for sustainable alternatives.
 * Interactive UI: Modern and intuitive interface for a seamless user experience.
 
 
@@ -78,7 +78,7 @@ npm run dev
 ## Credits
 
 Created by Evan Zhou, Kenneth Chen, Vijay Shrivarshan Vijayaraja
-Powered by AR technology and various modern web development tools.
+Powered by AR technology and various modern web development tools (listed above).
 
 
 ---
