@@ -1,7 +1,7 @@
 # CarbonPrint
 CarbonPrint solves the problem of uninformed shopping by using AR barcode scanning to instantly show a product’s environmental impact, empowering users to make eco-friendly choices and track their sustainability efforts.
 
-<img width="1705" alt="Screenshot 2024-12-13 at 5 49 12 PM" src="https://github.com/user-attachments/assets/2cc86175-b3b1-4eef-8d9d-ebdbf0c9a837" />
+<img width="1920" alt="Screenshot 2025-02-23 at 7 21 49 AM" src="https://github.com/user-attachments/assets/226233cb-cbe7-4490-9880-3ee44786ec3b" />
 
 ## Table of Contents
 * [General Info](#general-information)
