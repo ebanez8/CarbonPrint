@@ -2,6 +2,8 @@ import {
   ProductSustainabilityData,
   OpenFoodFactsProduct,
 } from "../types/product";
+import { analyzeProductDescription } from "../components/geminiNLP";
+import { predictEnvironmentalImpact } from "../components/geminiPredictive";
 
 const mockProducts: Record<string, ProductSustainabilityData> = {
   // Add mock products here if needed
@@ -39,6 +41,20 @@ export const fetchProductSustainabilityData = async (
       carbonScore.value
     );
 
+    // Analyze product description using Gemini AI NLP
+    const nlpAnalysis = await analyzeProductDescription(
+      data.product.ingredients_text || ""
+    );
+
+    // Predict environmental impact using Gemini AI predictive analytics
+    const historicalData = {
+      scenarioID: 1, // Example scenario ID
+      carTravel: carbonScore.value / 0.5, // Example calculation
+      treeAbsorption: carbonScore.value / 6, // Example calculation
+      arcticIceImpact: carbonScore.value * 0.15, // Example calculation
+    };
+    const predictiveAnalysis = await predictEnvironmentalImpact(historicalData);
+
     const productData: ProductSustainabilityData = {
       id: barcode,
       name: data.product.product_name || "Unknown Product",
@@ -59,6 +75,8 @@ export const fetchProductSustainabilityData = async (
       impactDetails: generateImpactDetails(data.product),
       alternatives,
       quantity: quantityStr,
+      nlpAnalysis, // Add NLP analysis results here
+      predictiveAnalysis, // Add predictive analysis results here
     };
 
     return productData;

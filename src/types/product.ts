@@ -1,3 +1,18 @@
+export interface OpenFoodFactsProduct {
+  status: number;
+  product: {
+    product_name: string;
+    brands: string;
+    categories: string;
+    quantity: string;
+    ecoscore_grade: string;
+    labels_tags: string[];
+    packaging: string;
+    ingredients_text: string;
+    image_url: string;
+  };
+}
+
 export interface ProductSustainabilityData {
   id: string;
   name: string;
@@ -28,21 +43,7 @@ export interface ProductSustainabilityData {
     carbonScore: number;
     savings: number;
   }[];
-  quantity: string;
-}
-
-export interface OpenFoodFactsProduct {
-  code: string;
-  status: number;
-  product: {
-    product_name: string;
-    brands: string;
-    categories: string;
-    ingredients_text: string;
-    packaging: string;
-    ecoscore_grade?: string;
-    labels_tags?: string[];
-    image_url?: string;
-    quantity?: string;
-  };
+  quantity?: string;
+  nlpAnalysis?: string; // Add NLP analysis results here
+  predictiveAnalysis?: any; // Add predictive analysis results here
 }

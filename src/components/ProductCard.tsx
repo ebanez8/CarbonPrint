@@ -224,6 +224,16 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </p>
           </div>
         )}
+
+        {product.nlpAnalysis && (
+          <div className="bg-gray-50 p-4 rounded-lg mt-4">
+            <div className="flex items-center gap-2 mb-2">
+              <InfoIcon className="w-4 h-4" />
+              <span className="font-medium">NLP Analysis:</span>
+            </div>
+            <p className="text-sm text-gray-600">{product.nlpAnalysis}</p>
+          </div>
+        )}
       </div>
     </motion.div>
   );
