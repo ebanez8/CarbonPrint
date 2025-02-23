@@ -102,9 +102,6 @@ const Index = () => {
               <button className="text-primary-700 hover:text-primary-900 transition-colors">
                 About
               </button>
-              <button className="text-primary-700 hover:text-primary-900 transition-colors">
-                History
-              </button>
             </nav>
           </div>
         </div>
@@ -259,6 +256,11 @@ const Index = () => {
           </div>
         </div>
       </main>
+      <footer className="py-4 mt-12 bg-gray-50">
+        <div className="container mx-auto text-center text-gray-600 text-sm">
+          Created by: Evan Zhou, Kenneth Chen, Vijay Shrivarshan Vijayaraja
+        </div>
+      </footer>
     </div>
   );
 };

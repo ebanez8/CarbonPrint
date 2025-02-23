@@ -22,6 +22,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { condenseProductInfo } from "./geminiRecommendations";
+
 
 interface ScanHistoryProps {
   history: ScanHistoryType[];
@@ -140,6 +142,8 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
   const [selectedScanId, setSelectedScanId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  // New state for Gemini AI output
+  const [geminiOutput, setGeminiOutput] = useState("");
 
   const getCarbonScoreStyle = (score: number) => {
     if (score <= 2) return "bg-green-100 text-green-700";
@@ -230,11 +234,16 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
   }
 };
 
-  const handleProductClick = async (scan: ScanHistoryType) => {
+const handleProductClick = async (scan: ScanHistoryType) => {
   setIsLoading(true);
   setDialogOpen(true);
   try {
-    const products = await fetchRecommendedProducts(scan.productName);
+    // Get a condensed version (1-2 words) using Gemini AI
+    const condensedName = await condenseProductInfo(scan.productName);
+    setGeminiOutput(condensedName);
+    console.log("Gemini Output:", condensedName);
+    // Use the condensed string to fetch recommendations
+    const products = await fetchRecommendedProducts(condensedName);
     const productsWithCO2 = await Promise.all(
       products.map(async (product) => ({
         ...product,
@@ -355,6 +364,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-8">
+            {/* Existing Recommendations Sections */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {impact.comparisons.map((comparison, index) => (
                 <Card key={index} className="relative overflow-hidden">
@@ -421,6 +431,8 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
               </Card>
             </div>
 
+            {/* New Gemini AI Output Section */}
+
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">
                 Eco-Friendly Alternatives
@@ -463,7 +475,9 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2Icon className="w-8 h-8 animate-spin text-green-600" />
-                <span className="ml-3 text-gray-600">Finding eco-friendly alternatives...</span>
+                <span className="ml-3 text-gray-600">
+                  Finding eco-friendly alternatives...
+                </span>
               </div>
             ) : (
               <div className="space-y-4">
@@ -486,8 +500,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                   ))
                 ) : (
                   <p className="text-gray-500 text-center py-4">
-                    No recommended products found. Try clicking on a product above
-                    to see alternatives.
+                    No recommended products found. Try clicking on a product above to see alternatives.
                   </p>
                 )}
               </div>
@@ -496,6 +509,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
         </DialogContent>
       </Dialog>
 
+      {/* Recent Scans Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -517,9 +531,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <p className="font-medium text-gray-900">
-                    {scan.productName}
-                  </p>
+                  <p className="font-medium text-gray-900">{scan.productName}</p>
                   {scan.brand && (
                     <p className="text-sm text-gray-500">{scan.brand}</p>
                   )}
@@ -540,7 +552,9 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                   )}`}
                 >
                   <LeafIcon className="w-4 h-4" />
-                  <span className="font-medium">{Math.round(scan.carbonScore*100)/100} kg CO₂</span>
+                  <span className="font-medium">
+                    {Math.round(scan.carbonScore * 100) / 100} kg CO₂
+                  </span>
                 </div>
               </div>
 
@@ -554,11 +568,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
                 {scan.recyclable !== undefined && (
                   <div className="flex items-center gap-1 text-sm">
                     <PackageIcon className="w-4 h-4" />
-                    <span
-                      className={
-                        scan.recyclable ? "text-green-600" : "text-red-600"
-                      }
-                    >
+                    <span className={scan.recyclable ? "text-green-600" : "text-red-600"}>
                       {scan.recyclable ? "Recyclable" : "Not Recyclable"}
                     </span>
                   </div>
@@ -568,18 +578,14 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
               {scan.sustainabilityBadges &&
                 scan.sustainabilityBadges.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {scan.sustainabilityBadges.map((badge) =>
-                      renderBadge(badge)
-                    )}
+                    {scan.sustainabilityBadges.map((badge) => renderBadge(badge))}
                   </div>
                 )}
             </motion.div>
           ))}
           {history.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              <p>
-                No scans yet. Start scanning products to build your history!
-              </p>
+              <p>No scans yet. Start scanning products to build your history!</p>
             </div>
           )}
         </div>
