@@ -96,7 +96,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-semibold text-primary-900 flex items-center gap-2">
               <LeafIcon className="h-6 w-6" />
-              CarbonFootprint AR
+              Carbonprint
             </h1>
             <nav className="space-x-4">
               <button className="text-primary-700 hover:text-primary-900 transition-colors">
