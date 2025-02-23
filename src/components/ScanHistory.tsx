@@ -138,6 +138,7 @@ const fetchCO2Impact = async (productId: string): Promise<string> => {
 };
 
 export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
+  const [selectedScanName, setSelectedScanName] = useState("");
   const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
   const [selectedScanId, setSelectedScanId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -237,6 +238,7 @@ export const ScanHistory = ({ history, stats }: ScanHistoryProps) => {
 const handleProductClick = async (scan: ScanHistoryType) => {
   setIsLoading(true);
   setDialogOpen(true);
+  setSelectedScanName(scan.productName);
   try {
     // Get a condensed version (1-2 words) using Gemini AI
     const condensedName = await condenseProductInfo(scan.productName);
@@ -482,22 +484,30 @@ const handleProductClick = async (scan: ScanHistoryType) => {
             ) : (
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg">Recommended Products</h3>
-                {selectedScanId !== null && recommendedProducts.length > 0 ? (
-                  recommendedProducts.slice(0, 5).map((product, index) => (
-                    <Card key={index}>
-                      <CardHeader>
-                        <CardTitle className="text-base flex items-center gap-2">
-                          <PackageIcon className="w-4 h-4" />
-                          {product.product_name || "Unknown Product"}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-green-600">
-                          Total CO₂ Impact (per 100g): {product.co2Impact} kg
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))
+                {selectedScanId !== null && recommendedProducts.filter(product => product.product_name && product.product_name.toLowerCase()).length > 0 ? (
+                  Array.from(
+                    new Map(
+                      recommendedProducts
+                        .filter(product => product.product_name && product.product_name.toLowerCase() !== selectedScanName.toLowerCase())
+                        .map(product => [product.product_name, product])
+                    ).values()
+                  )
+                    .slice(0, 5)
+                    .map((product, index) => (
+                      <Card key={index}>
+                        <CardHeader>
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <PackageIcon className="w-4 h-4" />
+                            {product.product_name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-green-600">
+                            Total CO₂ Impact (per 100g): {product.co2Impact} kg
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))
                 ) : (
                   <p className="text-gray-500 text-center py-4">
                     No recommended products found. Try clicking on a product above to see alternatives.
