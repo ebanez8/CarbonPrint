@@ -1,66 +1,88 @@
-# Welcome to CarbonPrint
+# CarbonPrint
+CarbonPrint solves the problem of uninformed shopping by using AR barcode scanning to instantly show a product’s environmental impact, empowering users to make eco-friendly choices and track their sustainability efforts.
 
-## Project Overview
+<img width="1705" alt="Screenshot 2024-12-13 at 5 49 12 PM" src="https://github.com/user-attachments/assets/2cc86175-b3b1-4eef-8d9d-ebdbf0c9a837" />
 
+## Table of Contents
+* [General Info](#general-information)
+* [Features](#features)
+* [Tools and Technologies](#tools-and-technologies)
+* [Setup](#setup)
+* [Usage](#usage)
+* [Credits](#credits)
+
+
+## General Information
 CarbonPrint is an AR-powered sustainability application that helps users make environmentally conscious purchasing decisions. By scanning product barcodes, users can instantly discover the environmental impact of products and track their sustainable choices over time.
 
-## How can I edit this code?
 
-**Use your preferred IDE**
+## Features
+* AR-Powered Scanning: Instantly discover the environmental impact of products by scanning barcodes.
+* User Statistics: Track total scans, eco-friendly choices, eco points, and carbon saved.
+* Scan History: View the history of scanned products and their environmental impact.
+* Smart Eco Advisor: Get suggestions for sustainable alternatives.
+* Interactive UI: Modern and intuitive interface for a seamless user experience.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. 
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Tools and Technologies
+* **Frontend Framework:**
+  - React (JavaScript library for building user interfaces)
+  - Vite (Next Generation Frontend Tooling)
 
-Follow these steps:
+* **Styling**
+  - Tailwind CSS (utility-first CSS framework)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+* **State Management**
+  - React Hooks (for managing state and side effects)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+* **APIs and Libraries:**
+  - Axios (for making HTTP requests)
+  - Framer Motion (for animations)
+  - Zod (for schema validation)
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Setup
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+1. **Install Node.js and NPM:**
+   - Install Node.js and npm from the official website
+
+2. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/ebanez8/CarbonPrint/
+   ```
+
+
+   
+3. **Navigate to the Project Directory:**
+   ```bash
+   cd CarbonPrint
+   ```
+   
+4. **Install the Necessary Dependencies:**
+   ```bash
+   npm install
+   ```
+
+## Usage
+
+1. **Start the Development Server:**
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## Project Structure
-
-src/
-├── components/     # Reusable UI components
-├── hooks/         # Custom React hooks
-├── lib/           # Utility functions
-├── pages/         # Page components
-├── services/      # API services
-└── types/         # TypeScript type definitions
+2. **Using the App**
+   - Scan product barcodes to get environmental impact data.
+   - View and analyze your scan history and user statistics.-
+   - Get suggestions for sustainable alternatives.
 
 
-This README provides a comprehensive overview of the CarbonPrint project, highlighting its key features, technology stack, and setup instructions. The documentation is structured to help both users and developers understand and contribute to the project effectively.
+## Credits
+
+Created by Evan Zhou, Kenneth Chen, Vijay Shrivarshan Vijayaraja
+Powered by AR technology and various modern web development tools.
+
+
+---
+
+<div align="center">
+Made by Evan Zhou, Kenneth Chen, Vijay Shrivarshan Vijayaraja
+</div>
