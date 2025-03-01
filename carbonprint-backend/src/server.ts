@@ -3,10 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import connectDB from './config/database';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -18,10 +15,10 @@ import './models/User';
 
 // Import routes
 import userRoutes from './routes/userRoutes';
-import scanHistoryRoutes from '../routes/scanHistoryRoutes';
-import authRoutes from './routes/authRoutes';
-// Import other routes as needed
+import scanHistoryRoutes from './routes/scanHistoryRoutes';
+import productRoutes from './routes/productRoutes';
 
+// Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/carbonprint';
@@ -34,26 +31,23 @@ console.log('Environment:', {
 });
 
 // Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:8080', credentials: true }));
-app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(helmet());
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use('/api', limiter);
 
 // Connect to MongoDB with better error handling
-connectDB();
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    console.log('Please check your MongoDB credentials and connection string');
+    // Don't exit process to allow for development restart
+  });
 
 // Routes
-app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/scans', scanHistoryRoutes);
+app.use('/api/products', productRoutes);
 
 // Basic route
 app.get('/', (req: Request, res: Response) => {
@@ -91,7 +85,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`API available at http://localhost:${PORT}`);
 });
@@ -101,8 +95,6 @@ process.on('unhandledRejection', (reason: any) => {
   console.error('Unhandled Rejection:', reason);
   // Don't exit the process in development to allow for hot reloading
   if (process.env.NODE_ENV === 'production') {
-    server.close(() => process.exit(1));
+    process.exit(1);
   }
 });
-
-export default app;
