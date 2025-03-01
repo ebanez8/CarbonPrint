@@ -1,1 +1,27 @@
-{ "compilerOptions": { "target": "ES2020", "useDefineForClassFields": true, "lib": ["ES2020", "DOM", "DOM.Iterable"], "module": "ESNext", "skipLibCheck": true, "jsx": "react-jsx", "noEmit": true, "moduleResolution": "node", "resolveJsonModule": true, "isolatedModules": true, "esModuleInterop": true, "strict": false, "noUnusedLocals": false, "noUnusedParameters": false, "noImplicitAny": false, "noFallthroughCasesInSwitch": false, "baseUrl": ".", "paths": { "@/": ["./src/"] }, "allowImportingTsExtensions": true }, "include": ["src"] }
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "useDefineForClassFields": true,
+      "lib": ["ES2020", "DOM", "DOM.Iterable"],
+      "module": "ESNext",
+      "skipLibCheck": true,
+      "jsx": "react-jsx",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "esModuleInterop": true,
+      "strict": false,
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "noImplicitAny": false,
+      "noFallthroughCasesInSwitch": false,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./src/*"]
+      },
+      "composite": true,
+      "declaration": true,
+      "emitDeclarationOnly": true
+    },
+    "include": ["src"]
+}

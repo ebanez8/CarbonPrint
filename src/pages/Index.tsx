@@ -13,7 +13,7 @@ import { fetchProductSustainabilityData } from "../services/sustainabilityApi";
 import { ProductSustainabilityData } from "../types/product";
 import { ScanHistory as ScanHistoryType, UserStats } from "../types/user";
 import { useToast } from "../hooks/use-toast";
-import { SmartEcoAdvisor } from "@/components/SmartEcoAdviser";
+import { SmartEcoAdvisor } from "../components/SmartEcoAdviser";
 import { debounce } from "../lib/utils";
 import { calculateEcoPoints } from "../components/ScanHistory"; // Import the calculateEcoPoints function
 import { Link } from "react-router-dom";

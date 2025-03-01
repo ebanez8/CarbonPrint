@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import ScanHistory from '../models/ScanHistory';
 
 // Record a new scan
+// Record a new scan
 export const recordScan = async (req: Request, res: Response) => {
   try {
     const { productId, productName, carbonFootprint, ecoScore } = req.body;
@@ -36,7 +37,7 @@ export const recordScan = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Failed to record scan',
-      error: error.message
+      error: error instanceof Error ? error.message : String(error)
     });
   }
 };
@@ -68,7 +69,7 @@ export const getUserScanHistory = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch scan history',
-      error: error.message
+      error: error instanceof Error ? error.message : String(error)
     });
   }
 };
@@ -128,7 +129,7 @@ export const getUserScanStats = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch scan statistics',
-      error: error.message
+      error: error instanceof Error ? error.message : String(error)
     });
   }
 };
