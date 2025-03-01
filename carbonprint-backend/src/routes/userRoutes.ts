@@ -1,5 +1,8 @@
 import express, { Request, Response, Router } from 'express';
 import User from '../models/User';
+import { body } from 'express-validator';
+import { registerUser, loginUser, getCurrentUser, getProfile, updateProfile } from '../controllers/userController';
+import { auth, protect } from '../middleware/auth';
 
 const router: Router = express.Router();
 
@@ -43,5 +46,24 @@ router.post('/:username/scans', async (req: Request, res: Response): Promise<voi
     res.status(400).json({ message: 'Error adding scan' });
   }
 });
+
+router.post('/register', [
+  body('email').isEmail().withMessage('Enter a valid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('name').not().isEmpty().withMessage('Name is required')
+], registerUser);
+
+router.post('/login', [
+  body('email').isEmail().withMessage('Enter a valid email'),
+  body('password').not().isEmpty().withMessage('Password is required')
+], loginUser);
+
+// Get current user (protected route)
+router.get('/me', auth, getCurrentUser);
+
+router.use(protect); // Protect all routes
+
+router.get('/profile', getProfile);
+router.put('/profile', updateProfile);
 
 export default router;
