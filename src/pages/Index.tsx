@@ -17,7 +17,7 @@ import { SmartEcoAdvisor } from "@/components/SmartEcoAdviser";
 import { debounce } from "../lib/utils";
 import { calculateEcoPoints } from "../components/ScanHistory"; // Import the calculateEcoPoints function
 import { Link } from "react-router-dom";
-import About from "../pages/About"
+import About from "../pages/About";
 
 const Index = () => {
   const [isScanning, setIsScanning] = useState(false);
